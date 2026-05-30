@@ -1,20 +1,25 @@
-# VideoChat
+# NotAlone
 
-A real-time random video chat app — like Omegle, built with WebRTC and Firebase Firestore as the signaling layer. No backend required.
+> *You don't have to be alone right now.*
 
-![VideoChat](https://img.shields.io/badge/WebRTC-P2P_Video-10b981?style=flat-square) ![Firebase](https://img.shields.io/badge/Firebase-Firestore-FF6F00?style=flat-square&logo=firebase) ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react) ![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite)
+A real-time random video chat app built for people who are feeling lonely. Connect instantly with a real human — no sign-up, no algorithm, no dating. Just a genuine conversation.
+
+Built with WebRTC + Firebase Firestore as the signaling layer. No backend required.
+
+![NotAlone](https://img.shields.io/badge/WebRTC-P2P_Video-10b981?style=flat-square) ![Firebase](https://img.shields.io/badge/Firebase-Firestore-FF6F00?style=flat-square&logo=firebase) ![React](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react) ![Vite](https://img.shields.io/badge/Vite-8-646CFF?style=flat-square&logo=vite)
 
 ---
 
 ## Features
 
-- **Random matching** — instantly paired with another online user
+- **Random matching** — instantly paired with a real person who's also looking to connect
 - **P2P video + audio** via WebRTC (no media server, direct peer connection)
-- **Next** — skip to a new random person without going back to the home screen
+- **Next** — skip to a new person without going back to the home screen
 - **Mute / Camera toggle** — control your own stream mid-call
 - **Live call timer** — shows how long you've been connected
 - **Dark, mobile-first UI** — works on phones and desktops
 - **Auto-cleanup** — Firestore rooms are deleted when either user leaves
+- **Not a dating app** — purely for human connection and conversation
 
 ---
 

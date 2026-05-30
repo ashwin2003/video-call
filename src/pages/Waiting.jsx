@@ -86,11 +86,13 @@ export default function Waiting({ displayName, onMatched, onLeave }) {
         </div>
 
         <div className="space-y-2">
-          <p className="text-white text-xl font-semibold">Hi, {displayName}!</p>
+          <p className="text-white text-xl font-semibold">Hang tight, {displayName}.</p>
           {error ? (
-            <p className="text-amber-400 text-sm max-w-xs">{error}</p>
+            <p className="text-amber-400 text-sm max-w-xs">Having trouble connecting. Trying again…</p>
           ) : (
-            <p className="text-zinc-400 text-sm">Looking for someone to talk to…</p>
+            <p className="text-zinc-400 text-sm leading-relaxed">
+              A real person is on their way to you.<br />This might take a moment.
+            </p>
           )}
         </div>
 
@@ -110,7 +112,7 @@ export default function Waiting({ displayName, onMatched, onLeave }) {
           onClick={handleCancel}
           className="mt-2 px-6 py-2.5 rounded-xl text-zinc-500 hover:text-white border border-zinc-800 hover:border-zinc-600 text-sm font-medium transition-all active:scale-95"
         >
-          Cancel
+          I'll come back later
         </button>
       </div>
     </div>

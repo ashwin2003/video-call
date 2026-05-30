@@ -42,7 +42,9 @@ export default function CallRoom({ roomId, isCaller, onNext, onLeave }) {
         <div className="w-14 h-14 rounded-2xl bg-red-500/15 border border-red-500/20 flex items-center justify-center">
           <FiVideoOff className="text-red-400 text-2xl" />
         </div>
-        <p className="text-zinc-300 max-w-xs text-sm leading-relaxed">{mediaError}</p>
+        <p className="text-zinc-300 max-w-xs text-sm leading-relaxed">
+          We couldn't access your camera or mic. Please allow access in your browser and try again.
+        </p>
         <button
           onClick={onLeave}
           className="px-6 py-3 rounded-2xl bg-zinc-800 hover:bg-zinc-700 text-white text-sm font-medium transition-all active:scale-95"
@@ -86,7 +88,7 @@ export default function CallRoom({ roomId, isCaller, onNext, onLeave }) {
             <span className="absolute w-20 h-20 rounded-full border border-emerald-500/20 animate-ping [animation-duration:1.6s]" />
             <div className="w-12 h-12 rounded-full border-2 border-emerald-500 border-t-transparent animate-spin" />
           </div>
-          <p className="text-zinc-300 text-base font-light tracking-wide">Connecting…</p>
+          <p className="text-zinc-300 text-base font-light tracking-wide">Hang on, setting things up…</p>
         </div>
       )}
 
@@ -97,14 +99,14 @@ export default function CallRoom({ roomId, isCaller, onNext, onLeave }) {
             <FiPhoneOff className="text-zinc-400 text-2xl" />
           </div>
           <div className="space-y-1">
-            <p className="text-white font-semibold">Call ended</p>
-            <p className="text-zinc-400 text-sm">Your match left the call.</p>
+            <p className="text-white font-semibold">They had to go.</p>
+            <p className="text-zinc-400 text-sm">That's okay. There's always someone else.</p>
           </div>
           <button
             onClick={handleNext}
             className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-semibold text-sm transition-all active:scale-95 shadow-lg shadow-emerald-900/40"
           >
-            Find someone new →
+            Talk to Someone Else
           </button>
         </div>
       )}
