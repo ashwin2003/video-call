@@ -5,9 +5,17 @@ import {
 import { db } from '../lib/firebase'
 import { deleteRoom } from '../lib/matchmaking'
 
+const TURN_USER = import.meta.env.VITE_TURN_USERNAME
+const TURN_CRED = import.meta.env.VITE_TURN_CREDENTIAL
+
 const STUN_SERVERS = {
   iceServers: [
     { urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] },
+    { urls: 'turn:relay.metered.ca:80',                    username: TURN_USER, credential: TURN_CRED },
+    { urls: 'turn:relay.metered.ca:80?transport=tcp',      username: TURN_USER, credential: TURN_CRED },
+    { urls: 'turn:relay.metered.ca:443',                   username: TURN_USER, credential: TURN_CRED },
+    { urls: 'turn:relay.metered.ca:443?transport=tcp',     username: TURN_USER, credential: TURN_CRED },
+    { urls: 'turns:relay.metered.ca:443?transport=tcp',    username: TURN_USER, credential: TURN_CRED },
   ],
 }
 
