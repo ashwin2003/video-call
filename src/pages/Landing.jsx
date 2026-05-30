@@ -1,13 +1,24 @@
 import { useState } from 'react'
-import { FiLock, FiHeart, FiCheck } from 'react-icons/fi'
+import { FiLock, FiHeart, FiCheck, FiVideoOff } from 'react-icons/fi'
 
 export default function Landing({ onStart }) {
-  const [name, setName] = useState('')
+  const [name, setName]           = useState('')
+  const [loading, setLoading]     = useState(false)
+  const [camError, setCamError]   = useState(false)
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     const trimmed = name.trim()
-    if (trimmed) onStart(trimmed)
+    if (!trimmed || loading) return
+    setCamError(false)
+    setLoading(true)
+    try {
+      await onStart(trimmed)
+    } catch {
+      // getUserMedia was denied — don't enter matchmaking
+      setCamError(true)
+    }
+    setLoading(false)
   }
 
   return (
@@ -62,18 +73,25 @@ export default function Landing({ onStart }) {
             autoFocus
             type="text"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={e => { setName(e.target.value); setCamError(false) }}
             placeholder="What should we call you?"
             maxLength={30}
-            className="w-full px-5 py-4 rounded-2xl bg-zinc-800/80 text-white placeholder-zinc-500 border border-zinc-700/80 focus:outline-none focus:border-emerald-500/70 focus:ring-2 focus:ring-emerald-500/10 transition-all text-center text-base"
+            disabled={loading}
+            className="w-full px-5 py-4 rounded-2xl bg-zinc-800/80 text-white placeholder-zinc-500 border border-zinc-700/80 focus:outline-none focus:border-emerald-500/70 focus:ring-2 focus:ring-emerald-500/10 transition-all text-center text-base disabled:opacity-50"
           />
           <button
             type="submit"
-            disabled={!name.trim()}
+            disabled={!name.trim() || loading}
             className="w-full py-4 rounded-2xl font-bold text-base transition-all disabled:opacity-30 disabled:cursor-not-allowed bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white shadow-lg shadow-emerald-900/40 active:scale-[0.98]"
           >
-            Talk to Someone
+            {loading ? 'Allow camera & mic…' : 'Talk to Someone'}
           </button>
+          {camError && (
+            <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20">
+              <FiVideoOff className="text-red-400 flex-shrink-0" />
+              <p className="text-red-400 text-sm">Camera or mic access was denied. Please allow it in your browser settings and try again.</p>
+            </div>
+          )}
         </form>
 
         {/* Reassurance pills */}

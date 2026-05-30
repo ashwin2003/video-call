@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import Landing  from './pages/Landing'
 import Waiting  from './pages/Waiting'
 import CallRoom from './pages/CallRoom'
@@ -8,8 +8,13 @@ export default function VideoApp() {
   const [displayName, setDisplayName] = useState('')
   const [roomId, setRoomId]           = useState(null)
   const [isCaller, setIsCaller]       = useState(false)
+  const preloadedStreamRef            = useRef(null)
 
-  function handleStart(name) {
+  // Called directly from the button tap — getUserMedia here triggers the
+  // permission prompt while we're still inside a user gesture on mobile.
+  async function handleStart(name) {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+    preloadedStreamRef.current = stream
     setDisplayName(name)
     setPhase('waiting')
   }
@@ -21,11 +26,13 @@ export default function VideoApp() {
   }
 
   function handleNext() {
+    preloadedStreamRef.current = null
     setRoomId(null)
     setPhase('waiting')
   }
 
   function handleLeave() {
+    preloadedStreamRef.current = null
     setRoomId(null)
     setDisplayName('')
     setPhase('landing')
@@ -40,6 +47,7 @@ export default function VideoApp() {
       roomId={roomId}
       isCaller={isCaller}
       displayName={displayName}
+      initialStream={preloadedStreamRef.current}
       onNext={handleNext}
       onLeave={handleLeave}
     />

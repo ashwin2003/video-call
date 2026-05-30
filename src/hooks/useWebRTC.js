@@ -20,7 +20,7 @@ async function fetchIceServers() {
   }
 }
 
-export function useWebRTC({ roomId, isCaller }) {
+export function useWebRTC({ roomId, isCaller, initialStream }) {
   const [localStream, setLocalStream]             = useState(null)
   const [remoteStream, setRemoteStream]           = useState(null)
   const [remoteDisplayName, setRemoteDisplayName] = useState('')
@@ -69,17 +69,22 @@ export function useWebRTC({ roomId, isCaller }) {
 
     async function init() {
       let stream
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
-      } catch (err) {
-        if (!cancelled) setMediaError(
-          err.name === 'NotAllowedError'
-            ? 'Camera/mic access denied. Please allow it in your browser and refresh.'
-            : `Could not access camera: ${err.message}`
-        )
-        return
+      // Reuse preloaded stream if its tracks are still live (avoids double prompt on mobile)
+      if (initialStream && initialStream.getTracks().some(t => t.readyState === 'live')) {
+        stream = initialStream
+      } else {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+        } catch (err) {
+          if (!cancelled) setMediaError(
+            err.name === 'NotAllowedError'
+              ? 'Camera/mic access denied. Please allow it in your browser and refresh.'
+              : `Could not access camera: ${err.message}`
+          )
+          return
+        }
+        if (cancelled) { stream.getTracks().forEach(t => t.stop()); return }
       }
-      if (cancelled) { stream.getTracks().forEach(t => t.stop()); return }
 
       localStreamRef.current = stream
       setLocalStream(stream)
@@ -176,7 +181,7 @@ export function useWebRTC({ roomId, isCaller }) {
       cancelled = true
       cleanupLocal()
     }
-  }, [roomId, isCaller, cleanupLocal])
+  }, [roomId, isCaller, initialStream, cleanupLocal])
 
   const toggleMute = useCallback(() => {
     if (!localStreamRef.current) return

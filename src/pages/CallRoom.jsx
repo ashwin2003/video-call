@@ -8,13 +8,13 @@ function formatDuration(secs) {
   return `${m}:${s}`
 }
 
-export default function CallRoom({ roomId, isCaller, onNext, onLeave }) {
+export default function CallRoom({ roomId, isCaller, initialStream, onNext, onLeave }) {
   // ── All hooks must be declared before any conditional returns ──────────────
   const {
     localStream, remoteStream, remoteDisplayName,
     connectionState, isMuted, isCameraOff, mediaError,
     toggleMute, toggleCamera, hangUp,
-  } = useWebRTC({ roomId, isCaller })
+  } = useWebRTC({ roomId, isCaller, initialStream })
 
   const localRef  = useRef(null)
   const remoteRef = useRef(null)
