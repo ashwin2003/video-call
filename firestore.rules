@@ -1,0 +1,21 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    match /videoCalls/{roomId} {
+      allow read, write: if true;
+      match /callerCandidates/{id} {
+        allow read, write: if true;
+      }
+      match /calleeCandidates/{id} {
+        allow read, write: if true;
+      }
+    }
+
+    match /visitors/{id} {
+      allow write: if true;
+      allow read: if false;
+    }
+
+  }
+}
