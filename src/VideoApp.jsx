@@ -2,6 +2,7 @@ import { useState, useRef } from 'react'
 import Landing  from './pages/Landing'
 import Waiting  from './pages/Waiting'
 import CallRoom from './pages/CallRoom'
+import { logVisitor } from './lib/analytics'
 
 export default function VideoApp() {
   const [phase, setPhase]             = useState('landing')
@@ -15,6 +16,7 @@ export default function VideoApp() {
   async function handleStart(name) {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true })
     preloadedStreamRef.current = stream
+    logVisitor(name) // fire-and-forget, never blocks
     setDisplayName(name)
     setPhase('waiting')
   }
