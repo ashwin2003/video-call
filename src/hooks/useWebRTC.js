@@ -5,18 +5,19 @@ import {
 import { db } from '../lib/firebase'
 import { deleteRoom } from '../lib/matchmaking'
 
-const TURN_USER = import.meta.env.VITE_TURN_USERNAME
-const TURN_CRED = import.meta.env.VITE_TURN_CREDENTIAL
+const METERED_API_KEY = import.meta.env.VITE_METERED_API_KEY
 
-const STUN_SERVERS = {
-  iceServers: [
-    { urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] },
-    { urls: 'turn:relay.metered.ca:80',                    username: TURN_USER, credential: TURN_CRED },
-    { urls: 'turn:relay.metered.ca:80?transport=tcp',      username: TURN_USER, credential: TURN_CRED },
-    { urls: 'turn:relay.metered.ca:443',                   username: TURN_USER, credential: TURN_CRED },
-    { urls: 'turn:relay.metered.ca:443?transport=tcp',     username: TURN_USER, credential: TURN_CRED },
-    { urls: 'turns:relay.metered.ca:443?transport=tcp',    username: TURN_USER, credential: TURN_CRED },
-  ],
+async function fetchIceServers() {
+  try {
+    const res = await fetch(
+      `https://video-call-remove-loneliness.metered.live/api/v1/turn/credentials?apiKey=${METERED_API_KEY}`
+    )
+    const iceServers = await res.json()
+    return { iceServers }
+  } catch {
+    // Fall back to Google STUN only if Metered is unreachable
+    return { iceServers: [{ urls: ['stun:stun1.l.google.com:19302', 'stun:stun2.l.google.com:19302'] }] }
+  }
 }
 
 export function useWebRTC({ roomId, isCaller }) {
@@ -83,7 +84,10 @@ export function useWebRTC({ roomId, isCaller }) {
       localStreamRef.current = stream
       setLocalStream(stream)
 
-      const pc = new RTCPeerConnection(STUN_SERVERS)
+      const rtcConfig = await fetchIceServers()
+      if (cancelled) { stream.getTracks().forEach(t => t.stop()); return }
+
+      const pc = new RTCPeerConnection(rtcConfig)
       pcRef.current = pc
 
       stream.getTracks().forEach(track => pc.addTrack(track, stream))
